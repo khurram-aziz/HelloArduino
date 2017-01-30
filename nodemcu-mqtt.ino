@@ -55,11 +55,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1') {
     Serial.println("Turning LED on");
-    digitalWrite(led, LOW);   //ESP is active low
+    digitalWrite(led, HIGH);
   }
   else if ((char)payload[0] == '0') {
     Serial.println("Turning LED off");
-    digitalWrite(led, HIGH);
+    digitalWrite(led, LOW);
   }
 }
 
