@@ -1,0 +1,9 @@
+{
+  "name": "firmata-test",
+  "version": "1.0.0",
+  "dependencies": {
+    "etherport-client": "^0.1.2",
+    "firmata": "^0.15.0",
+    "request": "^2.79.0"
+  }
+}
