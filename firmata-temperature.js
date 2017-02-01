@@ -44,9 +44,8 @@ board.on("ready", function() {
                         api_key: thingSpeakKey,
                         field1: analogValue, field2: mv, //good idea to send/store raw data
                         field3: temp
-                    },
-                    function(error, response, body) {
-                        if (error || response.statusCode == 200) {
+                    }, function(error, response, body) {
+                        if (error || response.statusCode != 200) {
                             console.log(error);
                             console.log(body);
                         }
