@@ -2,7 +2,7 @@ var Board = require("firmata").Board;
 var EtherPortClient = require("etherport-client").EtherPortClient;
 var request = require('request');
 
-var esp8266 = "192.168.0.91";
+var esp8266 = "192.168.0.111";
 var led = 0;
 var analog = 0;
 var thingSpeakKey = "";
@@ -36,16 +36,16 @@ board.on("ready", function() {
             var tempF = (tempC * 1.8) + 32;
             var cValue = round(tempC, 1);
             var fValue = round(tempF, 1);
-            console.log("Reading: " + analogValue + ", mv: " + mv + ", tempC: " + tempC + ", " + cValue + "C");
-            if (temp != cValue) { //only interested if temperature is changed
+            if (temp !== cValue) { //only interested if temperature is changed
                 temp = cValue;
+                console.log("Reading: " + analogValue + ", mv: " + mv + ", tempC: " + tempC + ", " + cValue + "C");
                 request.post('https://api.thingspeak.com/update.json', {
                     json: {
                         api_key: thingSpeakKey,
                         field1: analogValue, field2: mv, //good idea to send/store raw data
                         field3: temp
                     }, function(error, response, body) {
-                        if (error || response.statusCode != 200) {
+                        if (error) {
                             console.log(error);
                             console.log(body);
                         }

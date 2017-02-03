@@ -6,9 +6,12 @@
 // Replace with your network credentials and mqtt settings
 const char* ssid = "";
 const char* password = "";
+const char* mdnsName = "nodemcu";
 const char* mqttServer = "";
 const char* mqttUser = "";
 const char* mqttPassword = "";
+const char* mqttPubTopic = "nodemcu";
+const char* mqttSubTopic = "test";
 
 int led = 0;
 
@@ -33,12 +36,12 @@ void setup(void) {
     Serial.print(".");
   }
   
-  Serial.print("Connected to "); Serial.println(ssid);
-  Serial.print("IP address: "); Serial.println(WiFi.localIP());
+  Serial.print("Connected to ");  Serial.println(ssid);
+  Serial.print("IP address: ");   Serial.println(WiFi.localIP());
 
-  // lets mDNS nodemcu on the received ip
-  if (mdns.begin("nodemcu", WiFi.localIP())) {
-    Serial.println("mDNS started for nodemcu.local");
+  // lets mDNS on the received ip
+  if (mdns.begin(mdnsName, WiFi.localIP())) {
+    Serial.println("mDNS started for " + mdnsName + ".local");
   }
 
   client.setServer(mqttServer, 1883);
@@ -52,7 +55,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 
-  // Switch on the LED if an 1 was received as first character
+  // Switch on the LED if 1 was received as first character
   if ((char)payload[0] == '1') {
     Serial.println("Turning LED on");
     digitalWrite(led, HIGH);
@@ -68,8 +71,8 @@ void reconnect() {
     Serial.print("Attempting MQTT connection...");
     if (client.connect("ESP8266Client", mqttUser, mqttPassword)) {
       Serial.println("connected");
-      client.publish("nodemcu", "Connected"); //publishing its status
-      client.subscribe("test");               //subscribing to test
+      client.publish(mqttPubTopic, "Connected");  //publishing its status
+      client.subscribe(mqttSubTopic);             //subscribing to topic
     }
     else {
       Serial.print("Failed, state="); Serial.print(client.state());
@@ -84,4 +87,3 @@ void loop() {
     reconnect();
   client.loop();
 }
-
