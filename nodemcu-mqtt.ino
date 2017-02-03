@@ -19,7 +19,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 MDNSResponder mdns;
 
-void setup(void) {
+void setup() {
   pinMode(led, OUTPUT);
   digitalWrite(led, HIGH);
   WiFi.begin(ssid, password);
