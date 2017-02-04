@@ -2,6 +2,8 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
+#define MAXCLIENTS 2
+
 // Add your network credentials
 const char* ssid = "";
 const char* password = "";
@@ -11,6 +13,7 @@ int led = 0;
 MDNSResponder mdns;
 ESP8266WebServer httpServer(80);
 WiFiServer tcpServer(3000);
+WiFiClient clients[MAXCLIENTS];
 
 String webPage = ""; //we are using lambdas later
 
@@ -70,26 +73,35 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED)
     setupWifi();
 
-  //Blocking; and when connected; http will not work
-  WiFiClient client = tcpServer.available();
-  if (client) {
-    Serial.println("Client connected.");
-    while (client.connected()) {
-      if (client.available()) {
-        char command = client.read();
-        if (command == 'H') {
-          digitalWrite(led, HIGH);
-          Serial.println("LED is turned on");
-        }
-        else if (command == 'L') {
-          digitalWrite(led, LOW);
-          Serial.println("LED is turned off");
+  if (tcpServer.hasClient()) {
+    for (int i = 0; i < MAXCLIENTS; i++) {
+      if (!clients[i] || !clients[i].connected()) {
+        if (clients[i])
+          clients[i].stop();
+        clients[i] = tcpServer.available();
+        continue;
+      }
+    }
+    //no free spot
+    WiFiClient c = tcpServer.available();
+    c.stop();
+  }
+  for (int i = 0; i < MAXCLIENTS; i++) {
+    if (clients[i] && clients[i].connected()){
+      if (clients[i].available()) {
+        while (clients[i].available()) {
+          char command = clients[i].read();
+          if (command == 'H') {
+            digitalWrite(led, HIGH);
+            Serial.println("LED is turned on");
+          }
+          else if (command == 'L') {
+            digitalWrite(led, LOW);
+            Serial.println("LED is turned off");
+          }
         }
       }
     }
-    Serial.println("Client disconnected");
-    client.stop();
   }
-  
   httpServer.handleClient();
 } 
