@@ -2,7 +2,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-// Replace with your network credentials
+// Add your network credentials
 const char* ssid = "";
 const char* password = "";
 const char* mdnsName = "nodemcu";
@@ -36,15 +36,15 @@ void setupWifi() {
 }
 
 void setup() {
-  webPage = "<h1>Arduino core for ESP8266 WiFi chip</h1><p><a href=\"on\"><button>On</button></a><a href=\"off\"><button>Off</button></a></p>";  
   pinMode(led, OUTPUT);
-  digitalWrite(led, HIGH);
+  digitalWrite(led, HIGH); //lets find out if its working
   WiFi.begin(ssid, password);
   Serial.begin(115200); 
   Serial.println("Setting up");
   
   setupWifi();
-  
+
+  webPage = "<h1>Arduino core for ESP8266 WiFi chip</h1><p><a href=\"on\"><button>On</button></a><a href=\"off\"><button>Off</button></a></p>";
   httpServer.on("/", []() {
     httpServer.send(200, "text/html", webPage);
   });
