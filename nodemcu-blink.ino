@@ -52,7 +52,7 @@ void setup() {
     httpServer.send(200, "text/html", webPage);
     digitalWrite(led, HIGH);
   });
-  httpServer.on("/off", [](){
+  httpServer.on("/off", []() {
     httpServer.send(200, "text/html", webPage);
     digitalWrite(led, LOW);
   });

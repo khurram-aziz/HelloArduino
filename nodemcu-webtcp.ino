@@ -56,11 +56,13 @@ void setup() {
   });
   httpServer.on("/on", []() {
     httpServer.send(200, "text/html", webPage);
+    Serial.println("LED is turned on");
     digitalWrite(led, HIGH);
   });
-  httpServer.on("/off", [](){
+  httpServer.on("/off", []() {
     httpServer.send(200, "text/html", webPage);
     digitalWrite(led, LOW);
+    Serial.println("LED is turned off");
   });
 
   //Servers will continue to work across disconnection
