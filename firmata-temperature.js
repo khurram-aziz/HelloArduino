@@ -31,7 +31,8 @@ board.on("ready", function() {
     setInterval(function () {
         this.digitalWrite(led, (state ^= 1));
         board.analogRead(analog, function(analogValue) {
-            var mv = analogValue / 1000.0 * 3300;   //esp is powered by 3.3V
+            //LM35
+            var mv = analogValue * 3300.0 / 1023.0;    //esp is powered by 3.3V
             var tempC = mv / 10.0;
             var tempF = (tempC * 1.8) + 32;
             var cValue = round(tempC, 1);
